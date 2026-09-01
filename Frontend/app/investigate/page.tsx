@@ -1,17 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Radar,
   Network,
-  ShieldAlert,
-  Play,
   CheckCircle2,
   AlertTriangle,
   Server,
   Database,
   Cpu,
-  Layers,
   ArrowRight,
   RefreshCw,
   Zap,
@@ -91,8 +88,8 @@ export default function InvestigationCockpit() {
     },
     {
       id: 2,
-      name: "LIVE MEMORY DUMP SNAPSHOT",
-      desc: "Dump RAM state of PID 4920 to forensics buffer for binary inspection",
+      name: "CAPTURE NETWORK EVENT EVIDENCE",
+      desc: "Preserve source, destination, protocol, and payload telemetry for forensic review",
       status: "PENDING",
     },
     {
@@ -378,7 +375,7 @@ export default function InvestigationCockpit() {
               <div className="pane p-3 bg-[#0a0c10] border border-[#30363d] flex flex-col gap-2 mt-2 font-mono text-xs">
                 <span className="text-[#849495] font-bold">NEXT TACTICAL STEP:</span>
                 <p className="text-[#b9cacb] text-[11px]">
-                  After mitigation completes, inspect raw binary payload & memory stack traces in the Forensic Deep-Dive module.
+                  After mitigation completes, inspect raw network event telemetry and correlated evidence in the Forensic Deep-Dive module.
                 </p>
                 <a
                   href="/forensics"

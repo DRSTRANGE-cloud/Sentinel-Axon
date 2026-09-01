@@ -6,13 +6,9 @@ import {
   CheckCircle2,
   ShieldCheck,
   Download,
-  Terminal,
   Clock,
-  Server,
   FileText,
   RotateCcw,
-  Zap,
-  Lock,
 } from "lucide-react";
 
 export default function ResponseOutcome() {

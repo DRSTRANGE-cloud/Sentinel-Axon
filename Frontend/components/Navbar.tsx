@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Shield, Radio, Bell, Activity, Terminal, Lock, Cpu } from "lucide-react";
+import { Shield, Radio, Bell, Activity, Lock, Cpu } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();

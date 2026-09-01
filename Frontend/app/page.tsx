@@ -3,21 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  ShieldAlert,
   Cpu,
   Radar,
   Network,
   AlertTriangle,
-  Play,
-  Pause,
   Terminal,
-  Zap,
-  CheckCircle2,
   Lock,
   ArrowRight,
   Database,
   Activity,
-  Server,
+  type LucideIcon,
 } from "lucide-react";
 
 interface Agent {
@@ -25,7 +20,7 @@ interface Agent {
   name: string;
   role: string;
   status: "ACTIVE" | "SCANNING" | "STANDBY" | "ALERT";
-  icon: any;
+  icon: LucideIcon;
   color: string;
   colorBorder: string;
   lastAction: string;
@@ -488,7 +483,7 @@ export default function CommandHUD() {
                   >
                     <Database className="w-4 h-4 text-[#5bffa1] group-hover:scale-110 transition-transform" />
                     <span className="font-mono text-xs font-bold text-[#e2e2e8]">Deep-Dive</span>
-                    <span className="text-[10px] text-[#849495]">Hex & Binary</span>
+                    <span className="text-[10px] text-[#849495]">Event Evidence</span>
                   </Link>
                 </div>
               </div>
