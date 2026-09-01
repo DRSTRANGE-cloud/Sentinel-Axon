@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #0a0c10;
+    --foreground: #e2e2e8;
+  }
+}
+
+body {
+  background-color: #0a0c10;
+  color: #e2e2e8;
+}
+
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 240, 255, 0.025) 50%,
+    rgba(0, 240, 255, 0.025)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0.35;
+}
+
+.pane {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+}
+
+.pane-header {
+  background-color: #1c2128;
+  border-bottom: 1px solid #30363d;
+}
+
+.hud-glow {
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.hud-glow-error {
+  box-shadow: 0 0 10px rgba(255, 180, 171, 0.5);
+}
+
+.hud-glow-emerald {
+  box-shadow: 0 0 10px rgba(91, 255, 161, 0.5);
+}
+
+.pulse-anim {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.08); }
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #111318;
+}
+::-webkit-scrollbar-thumb {
+  background: #3b494b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00f0ff;
+}
