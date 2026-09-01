@@ -1,8 +1,7 @@
-from uuid import uuid4
-
-from sqlalchemy import Column, String, Text, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Text, DateTime
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
+import uuid
 
 from app.db.database import Base
 
@@ -13,27 +12,26 @@ class Incident(Base):
     id = Column(
         UUID(as_uuid=True),
         primary_key=True,
-        default=uuid4
+        default=uuid.uuid4
     )
 
     application_id = Column(
         UUID(as_uuid=True),
-        ForeignKey("applications.id"),
         nullable=False
     )
 
     title = Column(
-        String(200),
+        String,
         nullable=False
     )
 
-    description = Column(
-        Text,
+    attack_type = Column(
+        String,
         nullable=True
     )
 
     severity = Column(
-        String(20),
+        String,
         nullable=False
     )
 
@@ -43,30 +41,33 @@ class Incident(Base):
         default=0
     )
 
-    recommendation = Column(
+    status = Column(
+        String,
+        nullable=False,
+        default="open"
+    )
+
+    attack_chain = Column(
+        JSONB,
+        nullable=True
+    )
+
+    evidence = Column(
+        JSONB,
+        nullable=True
+    )
+
+    ai_summary = Column(
         Text,
         nullable=True
     )
 
-    # Database column is named "metadata".
-    # Python attribute cannot be called metadata because
-    # SQLAlchemy reserves that name.
-    incident_metadata = Column(
-        "metadata",
-        JSONB,
-        nullable=False,
-        default=dict
-    )
-
     created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False
+        DateTime,
+        server_default=func.now()
     )
 
-    updated_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False
+    resolved_at = Column(
+        DateTime,
+        nullable=True
     )
