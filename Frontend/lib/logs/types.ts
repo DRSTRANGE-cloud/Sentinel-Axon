@@ -1,4 +1,4 @@
-export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR" | "CRITICAL";
+export type LogLevel = "UNKNOWN" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "CRITICAL";
 
 export interface LogRecord {
   id: string;
@@ -8,7 +8,7 @@ export interface LogRecord {
   application: string;
   event: string;
   message: string;
-  raw: Record<string, string | number | boolean | null | string[]>;
+  raw: Record<string, unknown>;
   relatedForensicsId?: string;
   relatedIncidentId?: string;
 }

@@ -1,4 +1,4 @@
-export { forensicEvent } from "./mock-data";
+export { fetchForensicEvent } from "./api";
 export { formatPayload } from "./payload";
 export type {
   Artifact,

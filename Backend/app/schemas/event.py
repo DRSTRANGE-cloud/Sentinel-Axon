@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, Any, Optional, List
 from uuid import UUID
 
@@ -19,6 +20,7 @@ class EventResponse(BaseModel):
     id: UUID
     application_id: UUID
     event_type: str
+    created_at: datetime
     user_identifier: Optional[str]
     ip_address: Optional[str]
     user_agent: Optional[str]

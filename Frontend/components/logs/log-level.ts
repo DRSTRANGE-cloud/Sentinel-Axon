@@ -1,6 +1,7 @@
 import type { LogLevel } from "@/lib/logs";
 
 export const logLevelStyles: Record<LogLevel, string> = {
+  UNKNOWN: "border-[#849495] bg-[#849495]/10 text-[#849495]",
   DEBUG: "border-[#849495] bg-[#849495]/10 text-[#b9cacb]",
   INFO: "border-[#00f0ff] bg-[#00f0ff]/10 text-[#00f0ff]",
   WARN: "border-[#f7d774] bg-[#f7d774]/10 text-[#f7d774]",

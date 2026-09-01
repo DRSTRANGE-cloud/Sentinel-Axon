@@ -69,7 +69,7 @@ export function LogDetailsDrawer({ log, copied, onCopy, onClose }: LogDetailsDra
               <div className="mt-3 flex flex-wrap gap-2">
                 {log.relatedForensicsId ? (
                   <Link
-                    href="/forensics"
+                    href={`/forensics?eventId=${encodeURIComponent(log.relatedForensicsId)}`}
                     className="inline-flex items-center gap-1.5 border border-[#30363d] bg-[#161b22] px-3 py-1.5 font-mono text-[11px] text-[#00f0ff] hover:border-[#00f0ff] rounded"
                   >
                     Forensics {log.relatedForensicsId}

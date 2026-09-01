@@ -12,11 +12,15 @@ export function ForensicsSidebar({ event }: ForensicsSidebarProps) {
   return (
     <aside className="lg:col-span-4 flex flex-col gap-3 min-w-0">
       <SidebarSection icon={Bot} title="AI METADATA" count={`${event.aiMetadata.length} FIELDS`} ai>
-        <dl className="space-y-2">
-          {event.aiMetadata.map((item) => (
-            <DetailRow key={item.label} label={item.label} value={item.value} />
-          ))}
-        </dl>
+        {event.aiMetadata.length > 0 ? (
+          <dl className="space-y-2">
+            {event.aiMetadata.map((item) => (
+              <DetailRow key={item.label} label={item.label} value={item.value} />
+            ))}
+          </dl>
+        ) : (
+          <p className="text-xs text-[#849495]">No AI metadata available for this event.</p>
+        )}
       </SidebarSection>
 
       <SidebarSection icon={Fingerprint} title="RELATED ARTIFACTS" count={`${event.artifacts.length} ITEMS`}>
@@ -34,20 +38,24 @@ export function ForensicsSidebar({ event }: ForensicsSidebarProps) {
       </SidebarSection>
 
       <SidebarSection icon={GitBranch} title="MITRE ATT&CK" count={`${event.mitre.length} TECHNIQUES`}>
-        <div className="space-y-2">
-          {event.mitre.map((technique) => (
-            <article
-              key={technique.id}
-              className="border border-[#30363d] bg-[#0a0c10] px-3 py-2.5"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-mono text-[11px] font-bold text-[#00f0ff]">{technique.id}</span>
-                <span className="text-[10px] text-[#849495] text-right">{technique.tactic}</span>
-              </div>
-              <p className="mt-1 text-xs font-semibold text-[#e2e2e8]">{technique.name}</p>
-            </article>
-          ))}
-        </div>
+        {event.mitre.length > 0 ? (
+          <div className="space-y-2">
+            {event.mitre.map((technique) => (
+              <article
+                key={technique.id}
+                className="border border-[#30363d] bg-[#0a0c10] px-3 py-2.5"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-mono text-[11px] font-bold text-[#00f0ff]">{technique.id}</span>
+                  <span className="text-[10px] text-[#849495] text-right">{technique.tactic}</span>
+                </div>
+                <p className="mt-1 text-xs font-semibold text-[#e2e2e8]">{technique.name}</p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-[#849495]">No MITRE mapping available for this event.</p>
+        )}
       </SidebarSection>
 
       <Link
