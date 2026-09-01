@@ -27,8 +27,8 @@ class Incident(Base):
         nullable=False
     )
 
-    description = Column(
-        Text,
+    attack_type = Column(
+        String(100),
         nullable=True
     )
 
@@ -43,19 +43,26 @@ class Incident(Base):
         default=0
     )
 
-    recommendation = Column(
-        Text,
+    status = Column(
+        String(30),
         nullable=True
     )
 
-    # Database column is named "metadata".
-    # Python attribute cannot be called metadata because
-    # SQLAlchemy reserves that name.
-    incident_metadata = Column(
-        "metadata",
+    attack_chain = Column(
         JSONB,
-        nullable=False,
+        nullable=True,
+        default=list
+    )
+
+    evidence = Column(
+        JSONB,
+        nullable=True,
         default=dict
+    )
+
+    ai_summary = Column(
+        Text,
+        nullable=True
     )
 
     created_at = Column(
@@ -64,9 +71,27 @@ class Incident(Base):
         nullable=False
     )
 
-    updated_at = Column(
+    resolved_at = Column(
         DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False
+        nullable=True
     )
+
+    @property
+    def description(self):
+        return self.ai_summary
+
+    @property
+    def recommendation(self):
+        if isinstance(self.evidence, dict):
+            value = self.evidence.get("recommendation") or self.evidence.get("recommendations")
+            return str(value) if value else None
+        return None
+
+    @property
+    def incident_metadata(self):
+        return {
+            "status": self.status,
+            "attack_type": self.attack_type,
+            "attack_chain": self.attack_chain,
+            "evidence": self.evidence,
+        }

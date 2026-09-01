@@ -1,7 +1,7 @@
-from typing import Optional
 from uuid import UUID
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
@@ -12,6 +12,7 @@ from app.schemas.incident import (
     IncidentResponse,
     IncidentListResponse,
 )
+from app.services.incident_report import build_incident_report_pdf
 
 
 router = APIRouter(
@@ -41,11 +42,16 @@ def create_incident(
     incident = Incident(
         application_id=incident_data.application_id,
         title=incident_data.title,
-        description=incident_data.description,
+        attack_type=incident_data.attack_type,
         severity=incident_data.severity,
         risk_score=incident_data.risk_score,
-        recommendation=incident_data.recommendation,
-        incident_metadata=incident_data.incident_metadata,
+        status=incident_data.status,
+        attack_chain=incident_data.incident_metadata.get("attack_chain"),
+        evidence={
+            **incident_data.incident_metadata,
+            **({"recommendation": incident_data.recommendation} if incident_data.recommendation else {}),
+        },
+        ai_summary=incident_data.description,
     )
 
     db.add(incident)
@@ -97,3 +103,31 @@ def get_incident(
         )
 
     return incident
+
+
+@router.post("/{incident_id}/report")
+def generate_incident_report(
+    incident_id: UUID,
+    db: Session = Depends(get_db)
+):
+    incident = (
+        db.query(Incident)
+        .filter(Incident.id == incident_id)
+        .first()
+    )
+
+    if not incident:
+        raise HTTPException(
+            status_code=404,
+            detail="Incident not found"
+        )
+
+    pdf_bytes = build_incident_report_pdf(db, incident)
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="sentinel-incident-{incident.id}.pdf"'
+        },
+    )
