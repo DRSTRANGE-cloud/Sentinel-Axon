@@ -1,4 +1,4 @@
-export type Severity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+export type Severity = "UNKNOWN" | "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
 export interface Endpoint {
   label: string;

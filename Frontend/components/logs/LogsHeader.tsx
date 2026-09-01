@@ -4,10 +4,11 @@ import { RefreshCw, ScrollText } from "lucide-react";
 
 interface LogsHeaderProps {
   isLoading: boolean;
+  lastUpdated: string | null;
   onRefresh: () => void;
 }
 
-export function LogsHeader({ isLoading, onRefresh }: LogsHeaderProps) {
+export function LogsHeader({ isLoading, lastUpdated, onRefresh }: LogsHeaderProps) {
   return (
     <div className="pane p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
       <div className="flex items-center gap-3 min-w-0">
@@ -22,15 +23,21 @@ export function LogsHeader({ isLoading, onRefresh }: LogsHeaderProps) {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={onRefresh}
-        disabled={isLoading}
-        className="px-3 py-1.5 bg-[#161b22] border border-[#30363d] hover:border-[#00f0ff] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f0ff] text-[#e2e2e8] rounded transition-all flex items-center gap-2 font-mono text-xs font-bold"
-      >
-        <RefreshCw className={`w-3.5 h-3.5 text-[#00f0ff] ${isLoading ? "animate-spin" : ""}`} />
-        <span>{isLoading ? "REFRESHING" : "REFRESH"}</span>
-      </button>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="font-mono text-[11px] text-[#849495]">
+          <span className="text-[#5bffa1]">LIVE</span>
+          {lastUpdated ? <span> / UPDATED {lastUpdated}</span> : <span> / CONNECTING</span>}
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={isLoading}
+          className="px-3 py-1.5 bg-[#161b22] border border-[#30363d] hover:border-[#00f0ff] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f0ff] text-[#e2e2e8] rounded transition-all flex items-center gap-2 font-mono text-xs font-bold"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 text-[#00f0ff] ${isLoading ? "animate-spin" : ""}`} />
+          <span>{isLoading ? "SYNCING" : "REFRESH"}</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -13,15 +13,21 @@ export function LogsTable({ logs, isLoading, onSelect }: LogsTableProps) {
   if (isLoading) {
     return (
       <div className="pane overflow-hidden">
-        <TableHeader />
-        <div className="divide-y divide-[#30363d]">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="grid grid-cols-[9rem_6rem_10rem_10rem_10rem_minmax(18rem,1fr)] gap-3 px-4 py-3">
-              {Array.from({ length: 6 }).map((__, cellIndex) => (
-                <div key={cellIndex} className="h-3 bg-[#30363d] animate-pulse rounded" />
-              ))}
-            </div>
-          ))}
+        <TableStatusBar />
+        <div className="overflow-x-auto">
+          <div className="min-w-[1040px]">
+            <TableSkeletonHeader />
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-[11rem_6rem_12rem_13rem_12rem_minmax(18rem,1fr)] gap-3 border-t border-[#30363d] px-4 py-3"
+              >
+                {Array.from({ length: 6 }).map((__, cellIndex) => (
+                  <div key={cellIndex} className="h-3 bg-[#30363d] animate-pulse rounded" />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -38,9 +44,29 @@ export function LogsTable({ logs, isLoading, onSelect }: LogsTableProps) {
 
   return (
     <div className="pane overflow-hidden">
+      <TableStatusBar />
       <div className="overflow-x-auto">
-        <table className="min-w-[980px] w-full border-collapse text-left">
-          <TableHeader asTable />
+        <table className="min-w-[1040px] w-full table-fixed border-collapse text-left">
+          <colgroup>
+            <col className="w-[11rem]" />
+            <col className="w-[6rem]" />
+            <col className="w-[12rem]" />
+            <col className="w-[13rem]" />
+            <col className="w-[12rem]" />
+            <col />
+          </colgroup>
+          <thead className="bg-[#0f1318] border-y border-[#30363d]">
+            <tr>
+              {["TIMESTAMP", "LEVEL", "SOURCE", "APPLICATION", "EVENT", "MESSAGE"].map((label) => (
+                <th
+                  key={label}
+                  className="px-4 py-2.5 font-mono text-[10px] font-bold tracking-wider text-[#849495]"
+                >
+                  {label}
+                </th>
+              ))}
+            </tr>
+          </thead>
           <tbody className="divide-y divide-[#30363d]">
             {logs.map((log) => (
               <tr
@@ -55,16 +81,26 @@ export function LogsTable({ logs, isLoading, onSelect }: LogsTableProps) {
                 }}
                 className="cursor-pointer bg-[#161b22] hover:bg-[#1c2128] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#00f0ff]"
               >
-                <td className="px-4 py-3 font-mono text-[11px] text-[#b9cacb] whitespace-nowrap">{log.timestamp}</td>
+                <td className="px-4 py-3 font-mono text-[11px] text-[#b9cacb] whitespace-nowrap">
+                  {log.timestamp}
+                </td>
                 <td className="px-4 py-3">
                   <span className={`inline-flex border px-2 py-0.5 font-mono text-[10px] font-bold ${logLevelStyles[log.level]}`}>
                     {log.level}
                   </span>
                 </td>
-                <td className="px-4 py-3 font-mono text-[11px] text-[#00f0ff]">{log.source}</td>
-                <td className="px-4 py-3 text-xs text-[#e2e2e8]">{log.application}</td>
-                <td className="px-4 py-3 font-mono text-[11px] text-[#5bffa1]">{log.event}</td>
-                <td className="px-4 py-3 text-xs text-[#b9cacb]">{log.message}</td>
+                <td className="px-4 py-3 font-mono text-[11px] text-[#00f0ff] truncate" title={log.source}>
+                  {log.source}
+                </td>
+                <td className="px-4 py-3 font-mono text-[11px] text-[#e2e2e8] truncate" title={log.application}>
+                  {log.application}
+                </td>
+                <td className="px-4 py-3 font-mono text-[11px] text-[#5bffa1] truncate" title={log.event}>
+                  {log.event}
+                </td>
+                <td className="px-4 py-3 text-xs text-[#b9cacb] truncate" title={log.message}>
+                  {log.message}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -74,26 +110,26 @@ export function LogsTable({ logs, isLoading, onSelect }: LogsTableProps) {
   );
 }
 
-function TableHeader({ asTable = false }: { asTable?: boolean }) {
-  const labels = ["TIMESTAMP", "LEVEL", "SOURCE", "APPLICATION", "EVENT", "MESSAGE"];
-
-  if (asTable) {
-    return (
-      <thead className="pane-header">
-        <tr>
-          {labels.map((label) => (
-            <th key={label} className="px-4 py-2.5 font-mono text-[10px] font-bold tracking-wider text-[#849495]">
-              {label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-    );
-  }
-
+function TableStatusBar() {
   return (
-    <div className="pane-header grid grid-cols-[9rem_6rem_10rem_10rem_10rem_minmax(18rem,1fr)] gap-3 px-4 py-2.5 font-mono text-[10px] font-bold tracking-wider text-[#849495]">
-      {labels.map((label) => (
+    <div className="pane-header px-4 py-2.5 flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="font-mono text-[10px] font-bold tracking-wider text-[#00f0ff]">
+          EVENT STREAM
+        </span>
+        <span className="font-mono text-[10px] text-[#849495] truncate">
+          backend:/v1/events timezone:IST
+        </span>
+      </div>
+      <span className="font-mono text-[10px] text-[#849495] shrink-0">CLICK ROW FOR DETAILS</span>
+    </div>
+  );
+}
+
+function TableSkeletonHeader() {
+  return (
+    <div className="grid grid-cols-[11rem_6rem_12rem_13rem_12rem_minmax(18rem,1fr)] gap-3 bg-[#0f1318] border-y border-[#30363d] px-4 py-2.5 font-mono text-[10px] font-bold tracking-wider text-[#849495]">
+      {["TIMESTAMP", "LEVEL", "SOURCE", "APPLICATION", "EVENT", "MESSAGE"].map((label) => (
         <span key={label}>{label}</span>
       ))}
     </div>
