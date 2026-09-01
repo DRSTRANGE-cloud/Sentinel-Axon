@@ -23,6 +23,7 @@ export default function Navbar() {
   const navItems = [
     { label: "HUD", path: "/" },
     { label: "COCKPIT", path: "/investigate" },
+    { label: "LOGS", path: "/logs" },
     { label: "DEEP-DIVE", path: "/forensics" },
     { label: "RESPONSE", path: "/outcomes" },
   ];
