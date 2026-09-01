@@ -42,9 +42,9 @@ export default function CommandHUD() {
   const [threatLevel, setThreatLevel] = useState<"NOMINAL" | "ELEVATED" | "CRITICAL">("ELEVATED");
   const [commandInput, setCommandInput] = useState("");
   const [commandLogs, setCommandLogs] = useState<string[]>([
-    "[SYSTEM] AXON Kernel v4.2 initialized.",
-    "[SEC-GRID] 24 perimeter nodes online.",
-    "[ALERT] Suspicious outbound payload detected on port 8080.",
+    "[DEMO] HUD initialized with simulated command data.",
+    "[DEMO] Use Logs and Response for backend-connected telemetry.",
+    "[DEMO] Command actions are local UI state only.",
   ]);
 
   const [anomalies, setAnomalies] = useState<Anomaly[]>([
@@ -134,7 +134,7 @@ export default function CommandHUD() {
       prev.map((a) => (a.id === id ? { ...a, blocked: true } : a))
     );
     setCommandLogs((prev) => [
-      `[ACTION] Executed '${actionName}' on ${id}. Traffic diverted to Honeypot.`,
+      `[DEMO] Queued local action '${actionName}' on ${id}. No backend execution was performed.`,
       ...prev,
     ]);
   };
@@ -144,12 +144,12 @@ export default function CommandHUD() {
     if (!commandInput.trim()) return;
 
     const cmd = commandInput.trim();
-    let response = `[COMMAND] Executed: "${cmd}"`;
+    let response = `[DEMO] Accepted local command: "${cmd}"`;
 
     if (cmd.toLowerCase().includes("block")) {
-      response = `[FIREWALL] Rule injected: BLOCKED origin host. Syn-flood mitigated.`;
+      response = `[DEMO] Block command previewed locally. No firewall rule was injected.`;
     } else if (cmd.toLowerCase().includes("scan")) {
-      response = `[SCOUT-2] Initiating deep packet scan across DB-Alpha nodes.`;
+      response = `[DEMO] Scan command previewed locally. No backend scan was started.`;
     } else if (cmd.toLowerCase().includes("clear")) {
       setCommandLogs([]);
       setCommandInput("");
@@ -289,9 +289,9 @@ export default function CommandHUD() {
                   AUTONOMOUS ACTIVITY STREAM
                 </span>
               </div>
-              <span className="font-mono text-[11px] text-[#5bffa1] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5bffa1] animate-ping" />
-                LIVE SYNC
+              <span className="font-mono text-[11px] text-[#ffb86b] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ffb86b]" />
+                SIMULATED HUD
               </span>
             </div>
 
@@ -362,7 +362,7 @@ export default function CommandHUD() {
                 <Terminal className="w-4 h-4" />
                 <span>SENTINEL-AXON INTERACTIVE CLI</span>
               </div>
-              <span className="text-[10px] font-mono text-[#849495]">Type &apos;help&apos; or &apos;block &lt;ip&gt;&apos;</span>
+              <span className="text-[10px] font-mono text-[#849495]">Local demo commands only</span>
             </div>
 
             <div className="h-24 overflow-y-auto font-mono text-xs text-[#b9cacb] space-y-1 p-2 bg-[#111318] border border-[#30363d] rounded">
