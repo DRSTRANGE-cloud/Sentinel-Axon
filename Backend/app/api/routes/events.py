@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.event import Event
 from app.models.application import Application
-from app.schemas.event import EventCreate, EventResponse
-
+from app.schemas.event import EventCreate, EventResponse, EventListResponse
+from typing import Optional
+from uuid import UUID
 
 router = APIRouter(
     prefix="/v1/events",
@@ -61,3 +62,31 @@ def create_event(
     db.refresh(event)
 
     return event
+
+
+@router.get("", response_model=EventListResponse)
+def get_events(
+    application_id: Optional[UUID] = None,
+    limit: int = 50,
+    db: Session = Depends(get_db)
+):
+    query = db.query(Event)
+
+    # Optional application filter
+    if application_id:
+        query = query.filter(
+            Event.application_id == application_id
+        )
+
+    # Newest events first
+    events = (
+        query
+        .order_by(Event.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return EventListResponse(
+        events=events,
+        total=len(events)
+    )

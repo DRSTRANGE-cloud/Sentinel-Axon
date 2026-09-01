@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any
+from typing import Dict, Any, Optional, List
 from uuid import UUID
+
+from pydantic import BaseModel, Field
 
 
 class EventCreate(BaseModel):
@@ -28,3 +29,8 @@ class EventResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class EventListResponse(BaseModel):
+    events: List[EventResponse]
+    total: int
