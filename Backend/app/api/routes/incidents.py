@@ -5,14 +5,16 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.models.application import Application
 from app.models.incident import Incident
+<<<<<<< HEAD
 from app.schemas.incident import (
     IncidentCreate,
     IncidentResponse,
     IncidentListResponse,
 )
 from app.services.incident_report import build_incident_report_pdf
+=======
+>>>>>>> origin/main
 
 
 router = APIRouter(
@@ -21,6 +23,7 @@ router = APIRouter(
 )
 
 
+<<<<<<< HEAD
 @router.post("", response_model=IncidentResponse)
 def create_incident(
     incident_data: IncidentCreate,
@@ -62,30 +65,25 @@ def create_incident(
 
 
 @router.get("", response_model=IncidentListResponse)
+=======
+@router.get("")
+>>>>>>> origin/main
 def get_incidents(
-    application_id: Optional[UUID] = None,
     db: Session = Depends(get_db)
 ):
-    query = db.query(Incident)
-
-    if application_id:
-        query = query.filter(
-            Incident.application_id == application_id
-        )
-
     incidents = (
-        query
+        db.query(Incident)
         .order_by(Incident.created_at.desc())
         .all()
     )
 
-    return IncidentListResponse(
-        incidents=incidents,
-        total=len(incidents)
-    )
+    return {
+        "incidents": incidents,
+        "total": len(incidents)
+    }
 
 
-@router.get("/{incident_id}", response_model=IncidentResponse)
+@router.get("/{incident_id}")
 def get_incident(
     incident_id: UUID,
     db: Session = Depends(get_db)

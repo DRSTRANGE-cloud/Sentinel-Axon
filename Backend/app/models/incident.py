@@ -1,8 +1,7 @@
-from uuid import uuid4
-
-from sqlalchemy import Column, String, Text, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Text, DateTime
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
+import uuid
 
 from app.db.database import Base
 
@@ -13,27 +12,30 @@ class Incident(Base):
     id = Column(
         UUID(as_uuid=True),
         primary_key=True,
-        default=uuid4
+        default=uuid.uuid4
     )
 
     application_id = Column(
         UUID(as_uuid=True),
-        ForeignKey("applications.id"),
         nullable=False
     )
 
     title = Column(
-        String(200),
+        String,
         nullable=False
     )
 
     attack_type = Column(
+<<<<<<< HEAD
         String(100),
+=======
+        String,
+>>>>>>> origin/main
         nullable=True
     )
 
     severity = Column(
-        String(20),
+        String,
         nullable=False
     )
 
@@ -44,6 +46,7 @@ class Incident(Base):
     )
 
     status = Column(
+<<<<<<< HEAD
         String(30),
         nullable=True
     )
@@ -65,13 +68,35 @@ class Incident(Base):
         nullable=True
     )
 
+=======
+        String,
+        nullable=False,
+        default="open"
+    )
+
+    attack_chain = Column(
+        JSONB,
+        nullable=True
+    )
+
+    evidence = Column(
+        JSONB,
+        nullable=True
+    )
+
+    ai_summary = Column(
+        Text,
+        nullable=True
+    )
+
+>>>>>>> origin/main
     created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False
+        DateTime,
+        server_default=func.now()
     )
 
     resolved_at = Column(
+<<<<<<< HEAD
         DateTime(timezone=True),
         nullable=True
     )
@@ -95,3 +120,8 @@ class Incident(Base):
             "attack_chain": self.attack_chain,
             "evidence": self.evidence,
         }
+=======
+        DateTime,
+        nullable=True
+    )
+>>>>>>> origin/main
