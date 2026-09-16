@@ -1,100 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # Sentinel AI
 
-**Plug in your application. Let AI investigate the threats.**
+**Agentic AI for Real-Time Cybersecurity Investigation**
 
-Sentinel AI is an agentic AI cybersecurity assistant (SIH26-S01) that ingests security telemetry from connected applications, detects and correlates suspicious activity, runs multi-agent AI investigation, and produces analyst-ready incident reports. This repo contains the frontend — a Security Operations Center (SOC) dashboard built with Next.js.
+> Detect • Correlate • Investigate • Explain • Respond
 
-Sentinel does not scan arbitrary websites. An external application must explicitly send events to the Sentinel Security API before it can be monitored.
+## Overview
 
----
+Sentinel AI is an agentic AI-powered SOC platform that transforms fragmented security telemetry into correlated, risk-scored, evidence-backed incidents.
 
-## Tech Stack
+Instead of showing analysts isolated alerts, Sentinel correlates related events, reconstructs attack activity, applies deterministic risk scoring, and uses specialized AI agents to produce investigation findings and response recommendations.
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **UI Components:** shadcn/ui
-- **Charts:** Recharts
-- **Icons:** Lucide React
-- **Backend:** FastAPI (Python)
+**Core idea:** Turn raw security logs into explained, investigated, and actionable incidents.
+
+**Integration model:** An external application sends telemetry to Sentinel through the Security Events API. Sentinel does not scan arbitrary websites by itself.
 
 ---
 
-## Getting Started
+## Table of Contents
 
-### 1. Start the backend
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Core Data Model](#core-data-model)
+- [AI Agents](#ai-agents)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [API Surface](#api-surface)
+- [Getting Started](#getting-started)
+- [Investigation Workflow](#investigation-workflow)
+- [Troubleshooting](#troubleshooting)
+- [Design Principles](#design-principles)
+- [License](#license)
 
-```bash
-cd Backend
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+---
+
+## Key Features
+
+- **Real-Time Event Monitoring** — Ingests authentication and application telemetry such as failed logins, IP changes, and new-device activity.
+- **Threat Detection & Correlation** — Identifies suspicious patterns and connects related events into an attack chain.
+- **Deterministic Risk Scoring** — Calculates a transparent, reproducible risk score and severity from detected security factors.
+- **Multi-Agent AI Investigation** — Uses dedicated agents for log analysis, threat investigation, and response recommendations.
+- **Incident Management** — Persists attack type, severity, risk score, evidence, attack chain, AI summary, and status.
+- **Evidence Inspection** — Lets analysts inspect the telemetry supporting an incident.
+- **Response Recommendations** — Provides AI-generated actions without falsely representing recommendations as executed actions.
+- **Incident Reports** — Generates structured reports from persisted incident data without running another AI investigation.
+- **Sensitive Data Redaction** — Redacts fields such as `password`, `secret`, `token`, `api_key`, `apikey`, and `authorization` from reports.
+
+---
+
+## Architecture
+
+```text
+Security Event
+      ↓
+Event Ingestion & Normalization
+      ↓
+Threat Detection
+      ↓
+Event Correlation / Attack Chain
+      ↓
+Deterministic Risk Scoring
+      ↓
+┌─────────────────────────────────────┐
+│       AI Investigation Layer        │
+│                                      │
+│  Log Analysis Agent                 │
+│  Threat Investigation Agent         │
+│  Response Recommendation Agent      │
+└──────────────────┬───────────────────┘
+                    ↓
+             Incident Creation
+                    ↓
+        Evidence + AI Findings
+                    ↓
+         Response Recommendations
+                    ↓
+            Incident Report
 ```
 
-### 2. Start the frontend
+### Deterministic + AI Design
 
-```bash
-cd Frontend
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Deterministic layer:** event persistence, detection, correlation, risk scoring, and evidence form the authoritative security record.
+- **AI layer:** investigation, explanation, and response recommendations reason over that verified security context.
+
+This keeps the core security outputs reproducible and evidence-based while using AI where contextual reasoning adds value.
+
+---
+
+## Core Data Model
+
+| Concept | Meaning |
+|---|---|
+| **Events** | What happened |
+| **Agent Outputs** | What the AI analyzed/concluded |
+| **Incidents** | The security conclusion |
+| **Incident Events** | Events associated with an incident |
+
+---
+
+## AI Agents
+
+| Agent | Responsibility |
+|---|---|
+| **Log Analysis Agent** | Interprets raw security telemetry and identifies meaningful signals. |
+| **Threat Investigation Agent** | Correlates activity and assesses the security significance of the incident. |
+| **Response Recommendation Agent** | Generates recommended response actions from the investigation context. |
+
+---
+
+## Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| **Frontend** | Next.js, TypeScript, Tailwind CSS, shadcn/ui, Recharts, Framer Motion, Sonner |
+| **Backend** | Python, FastAPI, SQLAlchemy |
+| **Database** | PostgreSQL (Neon) |
+| **AI** | Groq-hosted LLM + multi-agent investigation |
+| **Deployment** | Vercel · Render · Neon |
+
+---
+
+## Project Structure
+
+```text
+Sentinel-Axon/
+├── Backend/
+│   ├── app/
+│   │   ├── api/routes/       # API endpoints
+│   │   ├── models/           # Database models
+│   │   ├── schemas/          # Request/response schemas
+│   │   ├── services/         # Application services
+│   │   └── main.py           # FastAPI entry point
+│   └── requirements.txt
+│
+├── Frontend/
+│   ├── app/                  # Next.js routes/pages
+│   ├── components/           # UI components
+│   ├── lib/                  # API/client utilities
+│   └── package.json
+│
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
+---
 
-### 3. Point the frontend at a different backend (optional)
+## API Surface
 
-By default the frontend calls `http://127.0.0.1:8000`. To use a different backend URL, set:
+All endpoints are versioned under `/v1`.
 
-```bash
-NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
-```
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/v1/health` | Backend health check |
+| `GET` | `/v1/events` | Security telemetry for the Logs interface |
+| `GET` | `/v1/incidents` | List persisted incidents |
+| `GET` | `/v1/incidents/{id}` | Retrieve an incident and investigation context |
+| `POST` | `/v1/incidents/{id}/report` | Generate an incident report |
 
-### 4. Verify the backend is up
-
-```http
-GET /v1/health
-```
-
-Expected response:
+Health response:
 
 ```json
 {
@@ -103,77 +164,125 @@ Expected response:
 }
 ```
 
----
+Interactive API documentation: `http://127.0.0.1:8000/docs`
 
-## App Routes & Data Sources
+### Event Telemetry Fields
 
-| Route | Purpose | Backend Source |
-|---|---|---|
-| `/logs` | Real-time security event telemetry. Polls the backend, no dummy data. | `GET /v1/events` |
-| `/outcomes` | Latest incident: summary, risk context, attack sequence, evidence snapshot. Recommendations are intentionally not shown here. | `GET /v1/incidents` |
-
-### Logs page — key event fields
-
-- `created_at`
-- `event_type`
-- `application_id`
-- `ip_address`
-- `user_identifier`
-- `user_agent`
-- `device_name`
-- `location`
-- `risk_points`
-- `event_metadata`
-
-### Outcomes page — key incident fields
-
-- `id`
-- `application_id`
-- `title`
-- `description`
-- `attack_type`
-- `severity`
-- `risk_score`
-- `status`
-- `attack_chain`
-- `evidence`
-- `ai_summary`
-
----
-
-## Incident Report Generation
-
-Triggered from the **Generate Incident Report** action on the Outcomes page.
-
-```http
-POST /v1/incidents/{incident_id}/report
+```text
+created_at, event_type, application_id, ip_address, user_identifier,
+user_agent, device_name, location, risk_points, event_metadata
 ```
 
-The report is built entirely from data already stored in the backend (`incidents`, `incident_events`, `events`, `agent_outputs`) — generating a report does **not** trigger a new AI investigation call.
+### Incident Fields
 
-**Report sections:**
+```text
+id, application_id, title, attack_type, severity, risk_score,
+status, attack_chain, evidence, ai_summary
+```
 
-1. Incident Header
-2. Executive Summary
-3. Correlated Security Telemetry
-4. Risk Breakdown
-5. Multi-Agent AI Findings
-6. Response Recommendations
+---
 
-**Redaction:** any field whose key contains `password`, `secret`, `token`, `api_key`, `apikey`, or `authorization` is redacted before the report is rendered.
+## Getting Started
+
+### Prerequisites
+
+- Python 3.x
+- Node.js + npm
+- PostgreSQL-compatible database (Neon)
+- Groq API key
+
+### 1. Backend
+
+```bash
+cd Backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Backend: `http://127.0.0.1:8000`
+
+### 2. Frontend
+
+Open a second terminal:
+
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+Frontend: `http://localhost:3000`
+
+### Environment Variables
+
+```bash
+# Backend
+DATABASE_URL=<postgresql-connection-string>
+GROQ_API_KEY=<groq-api-key>
+
+# Frontend
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+```
+
+Use the backend configuration files as the source of truth for exact variable names. Never commit real secrets or `.env` files.
+
+---
+
+## Investigation Workflow
+
+```text
+Security Event
+     ↓
+Persist Telemetry
+     ↓
+Detect Suspicious Activity
+     ↓
+Correlate Related Events
+     ↓
+Calculate Risk
+     ↓
+AI Investigation
+     ↓
+Create Incident
+     ↓
+Review Evidence & Findings
+     ↓
+Review Response Recommendations
+     ↓
+Generate Report
+```
+
+The frontend is designed around the analyst's key questions:
+
+> What happened? → Why is it suspicious? → What evidence supports it? → How did it progress? → What does the AI conclude? → What should be considered next?
 
 ---
 
 ## Troubleshooting
 
-### `GET /v1/incidents` returns 404
-
-FastAPI can keep a stale route table in memory across code changes. Restart the backend process, then verify:
-
-```bash
-curl http://127.0.0.1:8000/v1/incidents
-```
-
-Expected: HTTP `200` with an `incidents` array.
+| Problem | Fix |
+|---|---|
+| **Port 8000 already in use** | `netstat -ano \| findstr :8000` — check whether an existing backend is already running before starting another instance. |
+| **`<<<<<<< HEAD` syntax error** | Unresolved Git conflict markers. Run `git grep -n -E "^(<<<<<<<\|=======\|>>>>>>>)"`, resolve the conflicts, then validate with `cd Backend && python -m compileall app`. |
+| **`'next' is not recognized`** | Run `cd Frontend && npm install`, then `npm run dev`. |
+| **Frontend cannot reach backend** | Check `http://127.0.0.1:8000/v1/health`, verify `NEXT_PUBLIC_API_BASE_URL`, and restart the Next.js server after changing environment variables. |
+| **Incident API returns 404 after changes** | Restart the FastAPI server so the updated route table is loaded. |
 
 ---
+
+## Design Principles
+
+- **Evidence First** — Security conclusions remain tied to observable telemetry.
+- **Deterministic Risk** — Risk scoring is reproducible rather than solely LLM-derived.
+- **Specialized AI** — Investigation responsibilities are divided across dedicated agents.
+- **No Fake Execution** — Recommendations are never presented as executed without backend evidence.
+- **Analyst-Centric UX** — Prioritizes investigation context over raw alert volume.
+- **Progressive Disclosure** — Detailed evidence and attack sequences remain available without overwhelming the main dashboard.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
