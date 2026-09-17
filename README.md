@@ -22,7 +22,7 @@ Turn fragmented security telemetry into correlated, risk-scored, evidence-backed
 
 Security teams don't struggle with a lack of alerts — they struggle with **noise**. A failed login, an IP change, and a new device look harmless in isolation. Together, in sequence, they're an account takeover in progress.
 
-**Sentinel AI** is a SOC (Security Operations Center) platform that ingests raw security events, correlates them into attack chains, scores them deterministically, and hands them to a team of specialized AI agents for investigation — producing a fully-evidenced incident an analyst can act on in seconds, not hours.
+**Sentinel-Axon** is a SOC (Security Operations Center) platform that ingests raw security events, correlates them into attack chains, scores them deterministically, and hands them to a team of specialized AI agents for investigation — producing a fully-evidenced incident an analyst can act on in seconds, not hours.
 
 > An external application (an e-commerce platform, a SaaS product, an internal auth service) streams telemetry to Sentinel-Axon through a simple events API. Sentinel-Axon does not scan or probe systems on its own — it investigates what it's told.
 
@@ -49,8 +49,6 @@ Security teams don't struggle with a lack of alerts — they struggle with **noi
 
 </div>
 
-</parameter>
-
 ---
 
 ## ✨ Key Features
@@ -71,7 +69,7 @@ Security teams don't struggle with a lack of alerts — they struggle with **noi
 
 ## 🏗️ Architecture
 
-Sentinel-Axon AI runs on a **hybrid deterministic + AI pipeline**: measurable security logic decides *what happened and how risky it is*; AI agents decide *what it means and what to do about it*. The deterministic layer stays authoritative — AI never overrides it.
+Sentinel-Axon runs on a **hybrid deterministic + AI pipeline**: measurable security logic decides *what happened and how risky it is*; AI agents decide *what it means and what to do about it*. The deterministic layer stays authoritative — AI never overrides it.
 
 ```mermaid
 flowchart TD
@@ -141,8 +139,8 @@ Python 3.x · Node.js + npm · A PostgreSQL database (Neon recommended) · A Gro
 ### 1 — Clone
 
 ```bash
-git clone https://github.com/DRSTRANGE-cloud/Sentinel-Axon-Axon.git
-cd Sentinel-Axon-Axon
+git clone https://github.com/DRSTRANGE-cloud/Sentinel-Axon.git
+cd Sentinel-Axon
 ```
 
 ### 2 — Backend
@@ -195,7 +193,7 @@ All endpoints are versioned under `/v1`.
 **Health check response:**
 
 ```json
-{ "status": "ok", "service": "Sentinel-Axon-ai-backend" }
+{ "status": "ok", "service": "sentinel-axon-backend" }
 ```
 
 ---
@@ -216,7 +214,7 @@ Licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-**Sentinel-Axon AI** — from fragmented telemetry to explained, actionable incidents.
+**Sentinel-Axon** — from fragmented telemetry to explained, actionable incidents.
 
 [Repository](https://github.com/DRSTRANGE-cloud/Sentinel-Axon)
 
