@@ -1,21 +1,17 @@
 from uuid import UUID
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.models.incident import Incident
-<<<<<<< HEAD
+from app.models.application import Application
 from app.schemas.incident import (
     IncidentCreate,
     IncidentResponse,
     IncidentListResponse,
 )
 from app.services.incident_report import build_incident_report_pdf
-=======
->>>>>>> origin/main
-
 
 router = APIRouter(
     prefix="/v1/incidents",
@@ -23,13 +19,11 @@ router = APIRouter(
 )
 
 
-<<<<<<< HEAD
 @router.post("", response_model=IncidentResponse)
 def create_incident(
     incident_data: IncidentCreate,
     db: Session = Depends(get_db)
 ):
-    # Make sure the application exists
     application = (
         db.query(Application)
         .filter(Application.id == incident_data.application_id)
@@ -52,7 +46,11 @@ def create_incident(
         attack_chain=incident_data.incident_metadata.get("attack_chain"),
         evidence={
             **incident_data.incident_metadata,
-            **({"recommendation": incident_data.recommendation} if incident_data.recommendation else {}),
+            **(
+                {"recommendation": incident_data.recommendation}
+                if incident_data.recommendation
+                else {}
+            ),
         },
         ai_summary=incident_data.description,
     )
@@ -65,9 +63,6 @@ def create_incident(
 
 
 @router.get("", response_model=IncidentListResponse)
-=======
-@router.get("")
->>>>>>> origin/main
 def get_incidents(
     db: Session = Depends(get_db)
 ):
@@ -126,6 +121,8 @@ def generate_incident_report(
         content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f'attachment; filename="sentinel-incident-{incident.id}.pdf"'
+            "Content-Disposition": (
+                f'attachment; filename="sentinel-incident-{incident.id}.pdf"'
+            )
         },
     )
