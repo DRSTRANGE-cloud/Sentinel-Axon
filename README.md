@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ Sentinel AI
+# 🛡️ Sentinel-Axon AI
 
 **Agentic threat investigation for modern security teams.**
 
@@ -24,7 +24,7 @@ Security teams don't struggle with a lack of alerts — they struggle with **noi
 
 **Sentinel AI** is a SOC (Security Operations Center) platform that ingests raw security events, correlates them into attack chains, scores them deterministically, and hands them to a team of specialized AI agents for investigation — producing a fully-evidenced incident an analyst can act on in seconds, not hours.
 
-> An external application (an e-commerce platform, a SaaS product, an internal auth service) streams telemetry to Sentinel through a simple events API. Sentinel does not scan or probe systems on its own — it investigates what it's told.
+> An external application (an e-commerce platform, a SaaS product, an internal auth service) streams telemetry to Sentinel-Axon through a simple events API. Sentinel-Axon does not scan or probe systems on its own — it investigates what it's told.
 
 ---
 
@@ -32,17 +32,24 @@ Security teams don't struggle with a lack of alerts — they struggle with **noi
 
 <div align="center">
 
-| Dashboard | Incident Detail |
+| Command HUD | Investigation Cockpit |
 |---|---|
-| ![Sentinel AI Dashboard](./docs/screenshots/dashboard.png) | ![Incident Investigation View](./docs/screenshots/incident-detail.png) |
+| ![Command HUD — global threat level and anomaly feed](./Frontend/public/Docs/Screenshots/Image1.png) | ![Investigation Cockpit — threat correlation graph](./Frontend/public/Docs/Screenshots/Image2.png) |
+| Global threat level, live anomaly cards, and a *simulated* agent-activity stream (clearly labeled as such in-app). | Correlation graph linking compromised nodes, with a queued automated-response workflow alongside it. |
 
-| Attack Chain Timeline | Incident Report |
+| Event Logs | Forensic Deep-Dive |
 |---|---|
-| ![Attack Chain](./docs/screenshots/attack-chain.png) | ![PDF Report](./docs/screenshots/report.png) |
+| ![Event Logs — live telemetry stream](./Frontend/public/Docs/Screenshots/Image3.png) | ![Forensic Deep-Dive — raw event payload](./Frontend/public/Docs/Screenshots/Image4.png) |
+| Searchable, paginated event stream pulled live from `/v1/events`, filterable by level, application, and event type. | Full forensic breakdown of a single event — source/destination, raw JSON payload, and related artifacts. |
+
+| Response & Incident Analysis |
+|---|
+| ![Response — AI incident analysis](./Frontend/public/Docs/Screenshots/Image5.png) |
+| Backend-classified severity and risk score, AI-generated summary, evidence trail, and report export — with execution status shown honestly as *Not Executed* until the backend confirms otherwise. |
 
 </div>
 
-> *Add your own screenshots to `docs/screenshots/` and update the paths above — the table renders automatically once the images are in place.*
+</parameter>
 
 ---
 
@@ -64,7 +71,7 @@ Security teams don't struggle with a lack of alerts — they struggle with **noi
 
 ## 🏗️ Architecture
 
-Sentinel AI runs on a **hybrid deterministic + AI pipeline**: measurable security logic decides *what happened and how risky it is*; AI agents decide *what it means and what to do about it*. The deterministic layer stays authoritative — AI never overrides it.
+Sentinel-Axon AI runs on a **hybrid deterministic + AI pipeline**: measurable security logic decides *what happened and how risky it is*; AI agents decide *what it means and what to do about it*. The deterministic layer stays authoritative — AI never overrides it.
 
 ```mermaid
 flowchart TD
@@ -134,8 +141,8 @@ Python 3.x · Node.js + npm · A PostgreSQL database (Neon recommended) · A Gro
 ### 1 — Clone
 
 ```bash
-git clone https://github.com/DRSTRANGE-cloud/Sentinel-Axon.git
-cd Sentinel-Axon
+git clone https://github.com/DRSTRANGE-cloud/Sentinel-Axon-Axon.git
+cd Sentinel-Axon-Axon
 ```
 
 ### 2 — Backend
@@ -143,7 +150,7 @@ cd Sentinel-Axon
 ```bash
 cd Backend
 python -m venv venv
-.\venv\Scripts\Activate.ps1      # macOS/Linux: source venv/bin/activate
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
@@ -171,8 +178,6 @@ GROQ_API_KEY=<groq-api-key>
 NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-> ⚠️ Never commit real credentials or `.env` files. Rotate any key that has ever been pushed to a public branch.
-
 ---
 
 ## 🔌 API Reference
@@ -190,7 +195,7 @@ All endpoints are versioned under `/v1`.
 **Health check response:**
 
 ```json
-{ "status": "ok", "service": "sentinel-ai-backend" }
+{ "status": "ok", "service": "Sentinel-Axon-ai-backend" }
 ```
 
 ---
@@ -211,7 +216,7 @@ Licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-**Sentinel AI** — from fragmented telemetry to explained, actionable incidents.
+**Sentinel-Axon AI** — from fragmented telemetry to explained, actionable incidents.
 
 [Repository](https://github.com/DRSTRANGE-cloud/Sentinel-Axon)
 
