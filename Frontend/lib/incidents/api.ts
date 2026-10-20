@@ -1,4 +1,4 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+import { apiBlob, apiJson } from "@/lib/api";
 
 interface IncidentListResponse {
   incidents: IncidentSummary[];
@@ -15,39 +15,44 @@ export interface IncidentSummary {
   risk_score: number;
   status?: string | null;
   recommendation?: string | null;
-  incident_metadata: Record<string, unknown>;
+  incident_metadata?: Record<string, unknown> | null;
   attack_chain?: unknown[] | Record<string, unknown> | null;
   evidence?: Record<string, unknown> | unknown[] | null;
   ai_summary?: string | null;
 }
 
 export async function fetchLatestIncident(): Promise<IncidentSummary | null> {
-  const response = await fetch(`${apiBaseUrl}/v1/incidents`, {
+  const data = await apiJson<IncidentListResponse>("/v1/incidents", {
     headers: {
       Accept: "application/json",
     },
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error(`GET /v1/incidents failed with ${response.status}`);
+  if (!data || !Array.isArray(data.incidents)) {
+    throw new Error("GET /v1/incidents returned an unexpected response shape.");
   }
 
-  const data = (await response.json()) as IncidentListResponse;
-  return data.incidents[0] ?? null;
+  const incident = data.incidents[0];
+  if (incident === undefined) return null;
+  if (
+    !incident ||
+    typeof incident.id !== "string" ||
+    typeof incident.application_id !== "string" ||
+    typeof incident.title !== "string" ||
+    typeof incident.severity !== "string" ||
+    typeof incident.risk_score !== "number"
+  ) {
+    throw new Error("GET /v1/incidents returned an invalid incident record.");
+  }
+
+  return incident;
 }
 
 export async function generateIncidentReport(incidentId: string): Promise<Blob> {
-  const response = await fetch(`${apiBaseUrl}/v1/incidents/${incidentId}/report`, {
+  return apiBlob(`/v1/incidents/${encodeURIComponent(incidentId)}/report`, {
     method: "POST",
     headers: {
       Accept: "application/pdf",
     },
   });
-
-  if (!response.ok) {
-    throw new Error(`POST /v1/incidents/${incidentId}/report failed with ${response.status}`);
-  }
-
-  return response.blob();
 }

@@ -1,7 +1,6 @@
 import { formatIstTimestamp } from "@/lib/time";
+import { apiJson } from "@/lib/api";
 import type { Artifact, ForensicEvent, MetadataItem, Severity } from "./types";
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 interface EventsApiResponse {
   events: BackendEvent[];
@@ -23,18 +22,16 @@ interface BackendEvent {
 }
 
 export async function fetchForensicEvent(eventId?: string): Promise<ForensicEvent | null> {
-  const response = await fetch(`${apiBaseUrl}/v1/events?limit=50`, {
+  const data = await apiJson<EventsApiResponse>("/v1/events?limit=50", {
     headers: {
       Accept: "application/json",
     },
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error(`GET /v1/events failed with ${response.status}`);
+  if (!data || !Array.isArray(data.events)) {
+    throw new Error("GET /v1/events returned an unexpected response shape.");
   }
 
-  const data = (await response.json()) as EventsApiResponse;
   const event = eventId
     ? data.events.find((record) => record.id === eventId)
     : data.events[0];

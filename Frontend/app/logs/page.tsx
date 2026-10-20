@@ -123,14 +123,23 @@ export default function LogsPage() {
         onChange={updateFilters}
       />
 
-      {error ? (
+      {error && logs.length === 0 ? (
         <section className="pane p-4 border-[#ffb4ab]/60 bg-[#ffb4ab]/10">
           <p className="font-mono text-sm font-bold text-[#ffb4ab]">LOG API ERROR</p>
           <p className="mt-1 text-xs text-[#e2e2e8]">{error}</p>
         </section>
       ) : null}
 
-      <LogsTable logs={visibleLogs} isLoading={isLoading} onSelect={setSelectedLog} />
+      {!error || logs.length > 0 ? (
+        <LogsTable logs={visibleLogs} isLoading={isLoading} onSelect={setSelectedLog} />
+      ) : null}
+
+      {error && logs.length > 0 ? (
+        <section className="pane p-3 border-[#ffb86b]/50 bg-[#ffb86b]/10">
+          <p className="font-mono text-xs text-[#ffcf9c]">Refresh failed. Showing the last successful event results.</p>
+          <p className="mt-1 font-mono text-[10px] text-[#b9cacb]">{error}</p>
+        </section>
+      ) : null}
 
       <LogsPagination
         page={page}

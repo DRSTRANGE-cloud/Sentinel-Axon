@@ -17,7 +17,9 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "https://sentinel-axon.vercel.app",
     ],
+    allow_origin_regex=r"https://sentinel-axon-[a-z0-9-]+-drstrange-clouds-projects\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

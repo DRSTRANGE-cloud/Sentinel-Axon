@@ -1,7 +1,6 @@
 import type { LogLevel, LogRecord } from "./types";
 import { formatIstTimestamp } from "@/lib/time";
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+import { apiJson } from "@/lib/api";
 
 interface EventsApiResponse {
   events: BackendEvent[];
@@ -10,50 +9,54 @@ interface EventsApiResponse {
 
 interface BackendEvent {
   id: string;
-  application_id: string;
-  event_type: string;
-  created_at: string;
+  application_id?: string | null;
+  event_type?: string | null;
+  created_at?: string | null;
   user_identifier?: string | null;
   ip_address?: string | null;
   user_agent?: string | null;
   device_name?: string | null;
   location?: string | null;
-  event_metadata: Record<string, unknown>;
-  risk_points: number;
+  event_metadata?: Record<string, unknown> | null;
+  risk_points?: number | null;
 }
 
 export async function fetchEventLogs(limit = 50): Promise<LogRecord[]> {
-  const response = await fetch(`${apiBaseUrl}/v1/events?limit=${limit}`, {
+  const data = await apiJson<EventsApiResponse>(`/v1/events?limit=${limit}`, {
     headers: {
       Accept: "application/json",
     },
-    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error(`GET /v1/events failed with ${response.status}`);
+  if (!data || !Array.isArray(data.events)) {
+    throw new Error("GET /v1/events returned an unexpected response shape.");
+  }
+  if (data.events.some((event) => !event || typeof event.id !== "string" || !event.id)) {
+    throw new Error("GET /v1/events returned an event without a valid ID.");
   }
 
-  const data = (await response.json()) as EventsApiResponse;
   return data.events.map(mapEventToLogRecord);
 }
 
 function mapEventToLogRecord(event: BackendEvent): LogRecord {
+  const metadata = event.event_metadata ?? {};
+  const eventType = event.event_type || "Unknown";
+
   return {
     id: event.id,
-    timestamp: formatIstTimestamp(event.created_at),
-    level: getLevel(event.event_metadata),
+    timestamp: event.created_at ? formatIstTimestamp(event.created_at) : "Unknown",
+    level: getLevel(metadata),
     source: event.ip_address ?? event.user_identifier ?? "Unknown",
-    application: event.application_id,
-    event: event.event_type,
+    application: event.application_id || "Unknown",
+    event: eventType,
     message: buildEventMessage(event),
     relatedForensicsId: event.id,
     raw: {
-      ...event.event_metadata,
+      ...metadata,
       id: event.id,
       application_id: event.application_id,
-      event_type: event.event_type,
-      created_at: formatIstTimestamp(event.created_at),
+      event_type: eventType,
+      created_at: event.created_at ? formatIstTimestamp(event.created_at) : null,
       user_identifier: event.user_identifier,
       ip_address: event.ip_address,
       user_agent: event.user_agent,
@@ -78,9 +81,10 @@ function getLevel(metadata: Record<string, unknown>): LogLevel {
 }
 
 function buildEventMessage(event: BackendEvent) {
+  const eventType = event.event_type || "Unknown";
   const actor = event.user_identifier ? ` for ${event.user_identifier}` : "";
   const origin = event.ip_address ? ` from ${event.ip_address}` : "";
   const device = event.device_name ? ` on ${event.device_name}` : "";
 
-  return `${event.event_type}${actor}${origin}${device}`.trim();
+  return `${eventType}${actor}${origin}${device}`.trim();
 }
